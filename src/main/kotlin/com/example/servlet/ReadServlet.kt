@@ -13,6 +13,14 @@ class ReadServlet : HttpServlet() {
         override fun doGet(req: HttpServletRequest, res: HttpServletResponse) {
             val users = userDAO.getAllUsers()
             req.setAttribute("users", users)
-            req.getRequestDispatcher("/user-list.jsp").forward(req, res)
+            //req.getRequestDispatcher("/user-list.jsp").forward(req, res)
+            req.getRequestDispatcher("/WEB-INF/views/user-list.jsp").forward(req, res)
         }
+}
+
+@WebServlet("/add-user")
+class UserFormServlet : HttpServlet() {
+    override fun doGet(req: HttpServletRequest, res: HttpServletResponse) {
+        req.getRequestDispatcher("/WEB-INF/views/user-form.jsp").forward(req, res)
+    }
 }

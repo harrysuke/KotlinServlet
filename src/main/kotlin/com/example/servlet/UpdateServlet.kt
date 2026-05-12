@@ -15,7 +15,8 @@ class UpdateServlet : HttpServlet() {
         val id = req.getParameter("id").toInt()
         val user = userDAO.getUserById(id)
         req.setAttribute("user", user)
-        req.getRequestDispatcher("/user-form.jsp").forward(req, res)
+        //req.getRequestDispatcher("/user-form.jsp").forward(req, res)
+        req.getRequestDispatcher("/WEB-INF/views/user-form.jsp").forward(req, res)
     }
 }
 
