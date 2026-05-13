@@ -21,6 +21,9 @@ dependencies {
     //Optimization starts here
     implementation("com.zaxxer:HikariCP:5.1.0")
     implementation("com.github.ben-manes.caffeine:caffeine:3.1.8")
+    //REST API
+    implementation("com.fasterxml.jackson.core:jackson-databind:2.16.1")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.16.1")
 }
 
 kotlin {
