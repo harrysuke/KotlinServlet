@@ -13,6 +13,7 @@ repositories {
 
 dependencies {
     testImplementation(kotlin("test"))
+    implementation("org.mindrot:jbcrypt:0.4")
     providedCompile("jakarta.servlet:jakarta.servlet-api:6.0.0")
     providedRuntime("org.springframework.boot:spring-boot-starter-tomcat:2.7.18")
     implementation("org.jetbrains.kotlin:kotlin-stdlib")

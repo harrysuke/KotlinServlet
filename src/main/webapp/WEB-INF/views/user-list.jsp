@@ -1,10 +1,13 @@
 <%-- Created by IntelliJ IDEA. User: khairi Date: 12/05/2026 Time: 11:23 am To
 change this template use File | Settings | File Templates. --%> <%@ page
-contentType="text/html;charset=UTF-8" language="java" %> <%@ page
-import="com.example.model.User" %> <%@ page import="java.util.List" %> <%
-List<User>
-  users = (List<User
-    >) request.getAttribute("users"); %>
+contentType="text/html;charset=UTF-8" language="java" %> 
+<%@ page import="com.example.model.User" %> 
+<%@ page import="jakarta.servlet.http.HttpSession" %> 
+<%@ page import="java.util.List" %> 
+<%
+  List<User> users = (List<User>) request.getAttribute("users");  
+  String loggedUser = (String) session.getAttribute("loggedUser");
+  %>
     <html>
       <head>
         <title>user list</title>
@@ -16,6 +19,7 @@ List<User>
         />
       </head>
       <body>
+        <p>Logged in as: <%= loggedUser %> | <a href="${pageContext.request.contextPath}/">Home</a> <a href="logout">Logout</a></p>
         <a href="${pageContext.request.contextPath}/add-user">Add new user</a>
         <table class="table">
           <tr>

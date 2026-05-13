@@ -7,10 +7,12 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="com.example.model.User"%>
+<%@ page import="jakarta.servlet.http.HttpSession" %> 
 <%
     // Fix: Capitalized User cast (was lowercase 'user')
     User user = (User) request.getAttribute("user");
     boolean isEdit = (user != null);
+    String loggedUser = (String) session.getAttribute("loggedUser");
 %>
 <html>
 <head>
@@ -19,7 +21,7 @@
 </head>
 <body>
 <h1><%= isEdit ? "Edit User" : "Add User"%></h1>
-
+<p>Logged in as: <%= loggedUser %> | <a href="${pageContext.request.contextPath}/">Home</a> <a href="logout">Logout</a></p>
 <form action="<%= isEdit ? "user-update" : "user-insert"%>" method="post">
     <%-- Fix: Added the missing '{' after the if statement --%>
     <% if (isEdit) { %>
