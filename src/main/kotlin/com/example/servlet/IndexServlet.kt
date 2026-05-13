@@ -12,3 +12,11 @@ class IndexServlet : HttpServlet() {
         req.getRequestDispatcher("/WEB-INF/views/index.jsp").forward(req, res)
     }
 }
+
+@WebServlet("/api")
+class ApiIndexServlet  : HttpServlet() {
+    
+    override fun doGet(req: HttpServletRequest, res: HttpServletResponse) {
+        req.getRequestDispatcher("/WEB-INF/views/api.jsp").forward(req, res)
+    }
+}
