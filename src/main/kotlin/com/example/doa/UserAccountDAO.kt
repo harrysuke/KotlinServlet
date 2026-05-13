@@ -1,6 +1,7 @@
 package com.example.dao
 
-import com.example.database.Database
+//import com.example.database.Database
+import com.example.database.DatabasePool
 import com.example.model.UserAccount
 import org.mindrot.jbcrypt.BCrypt
 
@@ -11,7 +12,7 @@ class UserAccountDAO {
         //val hashed = BCrypt.hashpw(user.password, BCrypt.gensalt())
         val sql = "INSERT INTO tblusers (FullName, MobileNumber, country, EmailId, Username, Password, RegDate) VALUES (?,?,?,?,?,?,?)"
         val hashedPassword = org.mindrot.jbcrypt.BCrypt.hashpw(user.password, org.mindrot.jbcrypt.BCrypt.gensalt())
-        Database.getConnection().use { conn ->
+        DatabasePool.getConnection().use { conn ->
             conn.prepareStatement(sql).use { stmt ->
                 stmt.setString(1, user.fullName)
                 stmt.setString(2, user.mobileNumber)
@@ -28,7 +29,7 @@ class UserAccountDAO {
     // Validate login credentials
     fun validateLogin(username: String, plainPassword: String): UserAccount? {
         val sql = "SELECT * FROM tblusers WHERE Username=?"
-        Database.getConnection().use { conn ->
+        DatabasePool.getConnection().use { conn ->
             conn.prepareStatement(sql).use { pstmt ->
                 pstmt.setString(1, username)
                 val rs = pstmt.executeQuery()
@@ -54,7 +55,7 @@ class UserAccountDAO {
     // Optional: check if username or email already exists
     fun isUsernameTaken(username: String): Boolean {
         val sql = "SELECT id FROM tblusers WHERE EmailId=?"
-        return Database.getConnection().use { conn ->
+        return DatabasePool.getConnection().use { conn ->
             conn.prepareStatement(sql).use { pstmt ->
                 pstmt.setString(1, username)
                 pstmt.executeQuery().next()
@@ -64,7 +65,7 @@ class UserAccountDAO {
 
     fun isEmailTaken(email: String): Boolean {
         val sql = "SELECT id FROM tblusers WHERE EmailId=?"
-        return Database.getConnection().use { conn ->
+        return DatabasePool.getConnection().use { conn ->
             conn.prepareStatement(sql).use { pstmt ->
                 pstmt.setString(1, email)
                 pstmt.executeQuery().next()

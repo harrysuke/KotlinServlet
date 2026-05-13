@@ -18,6 +18,9 @@ dependencies {
     providedRuntime("org.springframework.boot:spring-boot-starter-tomcat:2.7.18")
     implementation("org.jetbrains.kotlin:kotlin-stdlib")
     implementation("com.mysql:mysql-connector-j:8.1.0")
+    //Optimization starts here
+    implementation("com.zaxxer:HikariCP:5.1.0")
+    implementation("com.github.ben-manes.caffeine:caffeine:3.1.8")
 }
 
 kotlin {

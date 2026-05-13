@@ -13,6 +13,7 @@
     User user = (User) request.getAttribute("user");
     boolean isEdit = (user != null);
     String loggedUser = (String) session.getAttribute("loggedUser");
+    if (loggedUser == null) response.sendRedirect("login");
 %>
 <html>
 <head>

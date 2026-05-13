@@ -1,14 +1,36 @@
 package com.example.doa
 
-import com.example.database.Database
+//import com.example.database.Database
+import com.example.database.DatabasePool
 import com.example.model.User
 import java.sql.SQLException
+//optimization
+import com.github.benmanes.caffeine.cache.Caffeine
+import java.util.concurrent.TimeUnit
+
+class CachedUserDAO(private val delegate: UserDAO) {
+    // 1. Remove the nullable '?' from User
+    private val userCache = Caffeine.newBuilder()
+        .expireAfterWrite(5, TimeUnit.MINUTES)
+        .maximumSize(100)
+        .build<Int, User>() 
+
+    fun getUserById(id: Int): User? {
+        // 2. Fetch from cache or load from DB if missing
+        return userCache.get(id) { key -> 
+            delegate.getUserById(key) 
+        }
+    }
+
+    fun invalidate(id: Int) = userCache.invalidate(id)
+    fun invalidateAll() = userCache.invalidateAll()
+}
 
 class UserDAO {
     fun insertUser(user: User): Boolean {
         val sql = "insert into tblusers (FullName, MobileNumber, EmailId, country) values (?, ?, ?, ?)"
         return try {
-          Database.getConnection().use { conn ->
+          DatabasePool.getConnection().use { conn ->
             conn.prepareStatement(sql).use { pstmt ->
                 pstmt.setString(1, user.fullName)
                 pstmt.setString(2, user.mobileNumber)
@@ -18,7 +40,6 @@ class UserDAO {
                 rowsAffected > 0 
             }
           }
-            true
         }
         catch(e: Exception) {
             e.printStackTrace()
@@ -28,7 +49,7 @@ class UserDAO {
     fun getAllUsers(): List<User> {
         val users = mutableListOf<User>()
         val sql = "select * from tblusers"
-        Database.getConnection().use { conn ->
+        DatabasePool.getConnection().use { conn ->
             conn.createStatement().use { stmt ->
                 val rs = stmt.executeQuery(sql)
                 while (rs.next()) {
@@ -48,7 +69,7 @@ class UserDAO {
     }
     fun getUserById(id: Int): User? {
         val sql = "select * from tblusers where id=?"
-        Database.getConnection().use { conn ->
+        DatabasePool.getConnection().use { conn ->
             conn.prepareStatement(sql).use { pstmt ->
                 pstmt.setInt(1, id)
                 val rs = pstmt.executeQuery()
@@ -67,7 +88,7 @@ class UserDAO {
     }
     fun updateUser(user: User): Boolean {
         val sql = "update tblusers set fullName = ?, mobileNumber=?, emailId=?, country=? where id = ?"
-        return Database.getConnection().use { conn ->
+        return DatabasePool.getConnection().use { conn ->
             conn.prepareStatement(sql).use { pstmt ->
                 pstmt.setString(1, user.fullName)
                 pstmt.setString(2, user.mobileNumber)
@@ -83,7 +104,7 @@ class UserDAO {
     }
     fun deleteUser(id: Int): Boolean {
         val sql = "delete from tblusers where id=?"
-        return Database.getConnection().use { conn ->
+        return DatabasePool.getConnection().use { conn ->
             conn.prepareStatement(sql).use { pstmt ->
                 pstmt.setInt(1, id)
                 // executeUpdate returns the count of deleted rows
