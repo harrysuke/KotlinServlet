@@ -1,7 +1,9 @@
 import jakarta.servlet.*
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
+import jakarta.servlet.annotation.WebFilter
 
+//@WebFilter(urlPatterns = ["/user-list", "/add-user", "/search-form", "/api", "/pdf-report"])
 class AuthFilter : Filter {
     override fun init(config: FilterConfig) {} // Type is required
 

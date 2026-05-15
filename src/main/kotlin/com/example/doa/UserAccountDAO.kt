@@ -4,6 +4,7 @@ package com.example.dao
 import com.example.database.DatabasePool
 import com.example.model.UserAccount
 import org.mindrot.jbcrypt.BCrypt
+import java.time.LocalDate
 
 class UserAccountDAO {
 
@@ -20,7 +21,7 @@ class UserAccountDAO {
                 stmt.setString(4, user.country)
                 stmt.setString(5, user.username)
                 stmt.setString(6, hashedPassword)
-                stmt.setString(7, user.regDate)
+                stmt.setDate(7, user.regDate?.let{java.sql.Date.valueOf(it)})
                 return stmt.executeUpdate() > 0
             }
         }
@@ -43,7 +44,7 @@ class UserAccountDAO {
                             emailId  = rs.getString("emailId"),
                             username = rs.getString("username"),
                             password = storedHash,
-                            regDate = rs.getString("regDate")
+                            regDate = rs.getDate("regDate")?.toLocalDate()
                         )
                     }
                 }
@@ -72,4 +73,33 @@ class UserAccountDAO {
             }
         }
     }
+
+    // 1. Added explicit return type ': MutableList<UserAccount>' to fix line 98
+    fun getUsersByDateRange(startDate: LocalDate, endDate: LocalDate): MutableList<UserAccount> {
+        val users = mutableListOf<UserAccount>()
+        val sql = "SELECT * FROM tblusers WHERE RegDate BETWEEN ? AND ?"
+        DatabasePool.getConnection().use { conn ->
+            conn.prepareStatement(sql).use { pstmt ->
+                // 2. Added '.toString()' to fix lines 82 and 83
+                pstmt.setString(1, startDate.toString())
+                pstmt.setString(2, endDate.toString())
+                val rs = pstmt.executeQuery()
+                while (rs.next()) {
+                users.add(UserAccount(
+                    fullName = rs.getString("fullName"),
+                    mobileNumber  = rs.getString("mobileNumber"),
+                    country = rs.getString("country"),
+                    emailId  = rs.getString("emailId"),
+                    username = rs.getString("username"),
+                    password = rs.getString("password"),
+                    // 3. Added '.toLocalDate()' to fix line 93 (handles null safely)
+                    regDate = rs.getDate("regDate")?.toLocalDate()
+                    ))
+                }
+            }
+        }
+        return users
+    }
+
+
 }

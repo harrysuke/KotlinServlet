@@ -1,5 +1,7 @@
 package com.example.model
 
+import java.time.LocalDate
+
 data class UserAccount(
     val fullName: String,
     val mobileNumber: String,
@@ -7,5 +9,5 @@ data class UserAccount(
     val country: String,
     val username: String,
     val password: String,
-    val regDate: String? = null
+    val regDate: LocalDate? = null
 )

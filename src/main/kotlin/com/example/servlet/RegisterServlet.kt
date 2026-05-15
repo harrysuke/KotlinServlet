@@ -6,6 +6,7 @@ import jakarta.servlet.annotation.WebServlet
 import jakarta.servlet.http.HttpServlet
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
+import java.time.LocalDate // Added import
 
 @WebServlet("/register")
 class RegisterServlet : HttpServlet(){
@@ -22,7 +23,9 @@ class RegisterServlet : HttpServlet(){
         val username = req.getParameter("username")
         val password = req.getParameter("password")
         val confirmPassword = req.getParameter("confirmPassword")
-        val regDate = java.time.LocalDate.now().toString()
+        
+        // FIX: Removed .toString() to keep this as a LocalDate object type
+        val regDate = LocalDate.now() 
 
         if(password != confirmPassword){
             req.setAttribute("error","Password do not match")
@@ -36,6 +39,7 @@ class RegisterServlet : HttpServlet(){
         }
         
         if (password == confirmPassword) {
+            // FIX: This line will now compile cleanly since regDate is a LocalDate type
             val user = UserAccount(fullName, mobileNumber, emailId, country, username, password, regDate)
             if (userDAO.registerUser(user)) {
                 res.sendRedirect(req.contextPath + "/")
@@ -48,6 +52,4 @@ class RegisterServlet : HttpServlet(){
             req.getRequestDispatcher("/WEB-INF/views/register.jsp").forward(req, res)
         }
     }
-
-
 }
