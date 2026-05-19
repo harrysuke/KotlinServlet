@@ -25,3 +25,10 @@ class SearchFormServlet : HttpServlet() {
         req.getRequestDispatcher("/WEB-INF/views/searchForm.jsp").forward(req, res)
     }
 }
+
+@WebServlet("/search-excel")
+class SearchExcelServlet : HttpServlet() {
+    override fun doGet(req: HttpServletRequest, res: HttpServletResponse) {
+        req.getRequestDispatcher("/WEB-INF/views/searchExcel.jsp").forward(req, res)
+    }
+}

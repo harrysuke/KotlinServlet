@@ -1,6 +1,6 @@
 package com.example.servlet
 
-import com.example.doa.UserDAO // 1. Ensure this package matches your project
+import com.example.doa.UserDAO
 import com.example.model.User
 import jakarta.servlet.annotation.WebServlet
 import jakarta.servlet.http.HttpServlet

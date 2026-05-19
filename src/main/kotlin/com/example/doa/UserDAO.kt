@@ -112,5 +112,29 @@ class UserDAO {
             }
         }
     }
+    fun getUserByDateRange(startDate: String, endDate: String): List<User> {
+        val users = mutableListOf<User>()
+        val sql = "select * from tblusers where RegDate between ? and ? order by RegDate desc"
+        DatabasePool.getConnection().use { conn ->
+            conn.prepareStatement(sql).use { pstmt ->
+                pstmt.setString(1, startDate)
+                pstmt.setString(2, endDate)
+                val rs = pstmt.executeQuery()
+                while (rs.next()) {
+                    users.add(
+                        User(
+                            id = rs.getInt("id"),
+                            fullName = rs.getString("fullName"),
+                            mobileNumber = rs.getString("mobileNumber"),
+                            emailId = rs.getString("emailId"),
+                            country = rs.getString("country"),
+                            regDate = rs.getDate("RegDate").toString()
+                        )
+                    )
+                }
+            }
+        }
+        return users
+    }
 
 }
